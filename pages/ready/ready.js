@@ -3,7 +3,7 @@ function getOnline() {
         .then(responseText => {
             const response = JSON.parse(responseText);
             return response.users.map(item => {
-                return `<li>${item.username}</li>`;
+                return `<li><h3>${item.username}</h3></li>`;
             });
         })
         .catch(reason => {
@@ -14,7 +14,7 @@ function getOnline() {
 }
 
 function addList(list) {
-    var listElement = document.querySelector('.list');
+    var listElement = document.querySelector('.w3-ul');
     listElement.innerHTML += list.join('');
 }
 
@@ -34,6 +34,10 @@ function goFight() {
         .then(responseText => {
             console.log(responseText);
             setCombatObject(responseText);
+            
+            var fightButton = document.querySelectorAll('center')[0];
+            fightButton.style.display = 'none';
+
             return waitForBattle();
         })
         .catch(reason => {
