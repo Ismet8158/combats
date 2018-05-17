@@ -18,25 +18,25 @@ function addList(list) {
     listElement.innerHTML += list.join('');
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', function () {
     getOnline()
         .then(addList);
 })
 
 function goFight() {
-    var user_id = getUser().token;
-    console.log('ID: ' + user_id);
+    var localUser = getUser();
+    console.log('ID: ' + localUser.token);
 
     return apiRequest('/fight', {
             method: 'POST',
-            body: `user_id=${user_id}`
+            body: `user_id=${localUser.token}`
         })
         .then(responseText => {
             console.log(responseText);
             setCombatObject(responseText);
-            
+
             var fightButton = document.querySelectorAll('center')[0];
-            fightButton.style.display = 'none';
+            //fightButton.innerHTML = "IN PROGRESS";
 
             return waitForBattle();
         })
@@ -46,17 +46,41 @@ function goFight() {
 }
 
 function waitForBattle() {
-    var user_id = getUser().token;
-    console.log('ID: ' + user_id);
+    var localUser = getUser();
+    console.log('ID: ' + localUser.token);
 
-    var combat = getCombatObject();
-    var combat_id = combat.combat_id;
-    console.log('COMBAT: ' + combat);
-    console.log('CID: ' + combat_id);
-    
-    setTimeout(() => {
-            return apiRequest(`/status?user_id=${user_id}&combat_id=${combat_id}`)
-                .then(responseText => console.log(responseText))
-                .catch(reason => console.error(reason))
-    }, 1000);
+    var combatObj = getCombatObject();
+    if (combatObj && localUser) {
+        var combatId = combatObj.combat.id;
+        var userId = localUser.token;
+        console.log('COMBAT: ' + combatObj);
+        console.log('COMBAT_ID: ' + combatId);
+        timeout();
+        function timeout(){
+            setTimeout(() => {
+                return apiRequest(`/status?user_id=${userId}&combat_id=${combatId}`)
+                    .then(responseText => {
+                        parsedResponse = JSON.parse(responseText);
+                        console.log(parsedResponse.combat.status);
+                        if(parsedResponse.combat.status === 'progress')
+                        {
+                            console.log(parsedResponse.combat);
+                        }
+                        else
+                            timeout();
+                    })
+                    .catch(reason => console.error(reason))
+            }, 1000);  
+        };
+              
+
+        
+    }
+}
+
+function logOut()
+{
+    localStorage.clear();
+    alert('logging out ...  ');
+    window.location = '/login/';
 }
