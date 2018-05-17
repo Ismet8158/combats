@@ -33,7 +33,7 @@
         //return combatObj = localStorage.getItem('combat_id');
         var combatObj = localStorage.getItem('combat');
         if (combatObj)
-            return JSON.parse(combatObj);
+            return JSON.parse(JSON.parse(combatObj));
         else
             return null;
 
