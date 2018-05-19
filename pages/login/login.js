@@ -1,25 +1,3 @@
-function whoAmI() {
-    return new Promise((resolve, reject) => {
-        var localUser = getUser();
-        // typeof null -----> "object"
-        if (localUser.token != null && localUser.username != null) {
-            apiRequest(`/whoami?user_id=${localUser.token}`)
-                .then(apiAnswer => {
-                    parsedAnswer = JSON.parse(apiAnswer);
-                    if (parsedAnswer.status === 'ok') {
-                        console.log('whoami done resolving ...');
-                        resolve(parsedAnswer);
-                    } else {
-                        reject('status is not ok rejecting ...');
-                    }
-                })  
-                .catch(reason => {
-                    console.log('Caught error in whoaimi: ' + reason);
-                });
-        }
-    });
-}
-
 function registerUser() {
     return new Promise((resolve, reject) => {
         var username = document.querySelector('.inp-username').value;
@@ -30,36 +8,40 @@ function registerUser() {
             .then(apiAnswer => {
                 var parsedAnswer = JSON.parse(apiAnswer);
                 if (parsedAnswer.status === 'ok') {
-                    // TODO1: проверку на успешность фукнции SetUserId;
                     setUserId({
                         username: parsedAnswer.user.username,
                         token: parsedAnswer.user.id
                     })
-                    whoAmI().then(result => {
-                        console.log('register done resolving ...');
-                        resolve(result);
-                    })
-                    // TODO1: Иначе reject;
+                    whoAmI()
+                        .then(result => {
+                            console.log('register done resolving ...');
+                            resolve(result);
+                        })
+                        .catch(reason => {
+                            console.log('Caught reject in registers whoami: ' + reason);
+                        })
+                }else{
+                    reject('parsedAnswer status is not OK rejecting ...')
                 }
             })
             .catch(reason => {
-                console.log('Caught error in register: ' + reason);
-            })
+                reject('Caught reject in register API request: ' + reason);
+            });
     });
 }
 
-window.addEventListener("load", function() {
-    whoAmI()
-        .then(result => {
-            alert('load -> reditect');
-            window.location = "/ready/";
-        })
-        .catch(reason => {
-            console.log('onload - rejected on whoaim: ' + reason);
-        })
+window.addEventListener('DOMContentLoaded', function() {
+        whoAmI()
+            .then(result => {
+                alert('load -> reditect');
+                window.location = "/ready/";
+            })
+            .catch(reason => {
+                console.log('No local user: ' + reason);
+            })   
 });
 
-document.querySelector('.btn-login').onclick = function() {
+document.querySelector('.btn-login').addEventListener('click', function() {
     registerUser()
         .then(result => {
             alert('button -> redirect');
@@ -68,4 +50,4 @@ document.querySelector('.btn-login').onclick = function() {
         .catch(reason => {
             console.log('onclick - rejected on register: ' + reason);
         });
-};
+});
