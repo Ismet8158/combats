@@ -10,7 +10,6 @@ function getOnline() {
             console.error(reason);
             return [];
         });
-
 }
 
 function addList(list) {
@@ -34,9 +33,9 @@ function goFight() {
         .then(responseText => {
             console.log(responseText);
             setCombatObject(responseText);
-
-            var fightButton = document.querySelectorAll('center')[0];
-            //fightButton.innerHTML = "IN PROGRESS";
+            
+            //var fightButton = document.querySelector('btn-fight');
+            //fightButton.innerHTML = "SEARCHING...";
 
             return waitForBattle();
         })
@@ -72,9 +71,6 @@ function waitForBattle() {
                     .catch(reason => console.error(reason))
             }, 1000);  
         };
-              
-
-        
     }
 }
 
@@ -84,3 +80,16 @@ function logOut()
     alert('logging out ...  ');
     window.location = '/login/';
 }
+ 
+window.addEventListener('DOMContentLoaded', function() {
+    whoAmI()
+        .then(result => {
+            console.log('logged in');
+        })
+        .catch(reason => {
+            console.log('No local user: ' + reason);
+            alert('back');
+            window.location = "/login/";
+        })
+       
+});
