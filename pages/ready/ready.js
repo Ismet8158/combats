@@ -3,7 +3,7 @@ function getOnline() {
         .then(responseText => {
             const response = JSON.parse(responseText);
             return response.users.map(item => {
-                return `<li><h3>${item.username}</h3></li>`;
+                return `<li>${item.username}</li>`;
             });
         })
         .catch(reason => {
@@ -17,7 +17,7 @@ function addList(list) {
     listElement.innerHTML += list.join('');
 }
 
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
     getOnline()
         .then(addList);
 })
@@ -32,10 +32,10 @@ function goFight() {
         })
         .then(responseText => {
             console.log(responseText);
+            // TODO: при повторном нажатии ВБОЙ если битва с вами уже ищется или в прогрессе
+            // делать проверку на ответ вида {status:'ok'} где нет объекта combat;
+            // Если ответ - упрощенный status:ok -> вызвать функцию продолжения боя или поиска.
             setCombatObject(responseText);
-            
-            //var fightButton = document.querySelector('btn-fight');
-            //fightButton.innerHTML = "SEARCHING...";
 
             return waitForBattle();
         })
@@ -49,7 +49,7 @@ function waitForBattle() {
     console.log('ID: ' + localUser.token);
 
     var combatObj = getCombatObject();
-    if (combatObj && localUser) {
+    if (combatObj.combat.id && localUser.token) {
         var combatId = combatObj.combat.id;
         var userId = localUser.token;
         console.log('COMBAT: ' + combatObj);
@@ -68,9 +68,16 @@ function waitForBattle() {
                         else
                             timeout();
                     })
-                    .catch(reason => console.error(reason))
+                    .catch(reason => {
+                        console.error('Something wrong in waitForBattle.timeout.ApiRequest()::' + reason);
+                        //TODO: Добавить логику на сломанный apiRequest();
+                    })
             }, 1000);  
         };
+    }
+    else{
+        console.log('Not filled fields in Combat&User');
+        return;
     }
 }
 
