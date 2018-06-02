@@ -17,44 +17,45 @@ function addList(list) {
     listElement.innerHTML += list.join('');
 }
 
-window.addEventListener('load', () => {
-    getOnline()
-        .then(addList);
-})
-
 function goFight() {
-    //TODO: Сделать проверку на нужный возврат user здесь либо в common.js/getUser()
-    var localUser = getUser();
-
-    return apiRequest('/fight', {
-            method: 'POST',
-            body: `user_id=${localUser.token}`
-        })
-        .then(responseText => {
-            console.log(responseText);
-            // TODO: при повторном нажатии ВБОЙ если битва с вами уже ищется или в прогрессе
-            // делать проверку на ответ вида {status:'ok'} где нет объекта combat;
-            // Если ответ - упрощенный status:ok -> вызвать функцию продолжения боя или поиска.
-            setCombatObject(responseText);
-
-            return waitForBattle();
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
+    var localUser;
+    if(localUser = getUser()){
+        return apiRequest('/fight', {
+                method: 'POST',
+                body: `token=${localUser.token}`
+            })
+            .then(responseText => {
+                console.log(responseText);
+                parsedAnswer = JSON.parse(responseText);
+                
+                if(parsedAnswer.status && parsedAnswer.combat){
+                    setCombatObject(responseText);
+                    return waitForBattle();
+                }
+                else
+                    // TODO: fix API
+                    return;
+            })
+            .catch(reason => {
+                console.error('FightAPI req error: ' + reason);
+            });
+    }
+    else{
+        console.log('Cant getUser();')
+    }
 }
 
 function waitForBattle() {
     var buttonFight = document.querySelector('.btn-fight');
-    var localUser = getUser();
-    var combatObj = getCombatObject();
-    if (combatObj.combat.id && localUser.token) {
+    var localUser;
+    var combatObj;
+    if ((combatObj = getCombatObject()) && (localUser = getUser())) {
         var combatId = combatObj.combat.id;
-        var userId = localUser.token;
+        var userToken = localUser.token;
         timeout();
         function timeout(){
             setTimeout(() => {
-                return apiRequest(`/status?user_id=${userId}&combat_id=${combatId}`)
+                return apiRequest(`/status?token=${userToken}&combat_id=${combatId}`)
                     .then(responseText => {
                         parsedResponse = JSON.parse(responseText);
                         console.log(parsedResponse.combat.status);
@@ -69,29 +70,30 @@ function waitForBattle() {
                             timeout();
                     })
                     .catch(reason => {
-                        console.error('Something wrong in waitForBattle.timeout.ApiRequest()::' + reason);
+                        console.error('WaitForBattle.timeout.ApiRequest() error:: ' + reason);
                         //TODO: Добавить логику на сломанный apiRequest();
                     })
             }, 1000);  
         };
     }
     else{
-        console.log('Not filled fields in Combat&User');
+        console.log('Cant getUser() || getCombat();');
         return;
     }
 }
 
-function logOut()
-{
-    localStorage.clear();
-    window.location = '/login/';
+function logOut(){
+    if(clearLocalStorage())
+        window.location = '/login/';
 }
  
 window.addEventListener('DOMContentLoaded', function() {
+    getOnline()
+        .then(addList);
+
     whoAmI()
         .then(result => {
-            console.log('logged in');
-            // Костыль
+            // Костыль?
             if(getCombatObject())
                 waitForBattle();
         })
@@ -99,7 +101,5 @@ window.addEventListener('DOMContentLoaded', function() {
             console.log('No local user: ' + reason);
             alert('back');
             window.location = "/login/";
-        })
-     
-        
+        })   
 });
