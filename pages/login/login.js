@@ -1,58 +1,84 @@
-//TODO: Убрать лишние промисы.
 function registerUser() {
     return new Promise((resolve, reject) => {
         var username = document.querySelector('.inp-username').value;
+        var password = document.querySelector('.inp-password').value;
         apiRequest('/register', {
                 method: 'POST',
-                body: `username=${username}`
+                body: `username=${username}&password=${password}`
             })
             .then(apiAnswer => {
                 var parsedAnswer = JSON.parse(apiAnswer);
+                console.log('Reg:');console.log(parsedAnswer);
                 if (parsedAnswer.status === 'ok') {
-                    if(setUserId({
-                        username: parsedAnswer.user.username,
-                        token: parsedAnswer.user.id
-                    })){
-                        return whoAmI();
+                    var userObj = parsedAnswer.user;
+                    if(setUser(userObj)){
+                        resolve(parsedAnswer);
                     }
                     else{
-                        reject('User registered, but cant set localUser rejecting ...')
+                        reject('Cant setUser(); ')
                     }
                 }
                 else{
-                    reject('parsedAnswer status is not OK rejecting ...');
+                    reject('parsedAnswerRegister.status != OK; ');
                 }
             })
-            .then(result => {
-                console.log('register done resolving ...');
-                resolve(result);
-            })
             .catch(reason => {
-                reject('Caught reject in register API request: ' + reason);
+                reject('RegisterAPI request error: ' + reason);
             });
     });
 }
 
+function loginUser() {
+    return new Promise((resolve, reject) => {
+        var username = document.querySelector('.inp-username').value;
+        var password = document.querySelector('.inp-password').value;
+        apiRequest('/login', {
+                method: 'POST',
+                body: `username=${username}&password=${password}`
+            })
+            .then(apiAnswer => {
+                var parsedAnswer = JSON.parse(apiAnswer);
+                console.log('login: ');console.log(parsedAnswer);
+                if (parsedAnswer.status === 'ok') {
+                    var userObj = parsedAnswer.user;
+                    if(setUser(userObj)){
+                        resolve(parsedAnswer);
+                    }
+                    else{
+                        reject('Cant setUser(); ');
+                    }
+                }
+                else{
+                    reject('LoginAnswer.status != ok; ');
+                }       
+            })
+            .catch(reason => reject('LoginAPI request error; ' + reason));
+    });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.btn-login').addEventListener('click', () => {
+    document.querySelector('.btn-registr').addEventListener('click', () => {
         registerUser()
             .then(result => {
-                alert('button -> redirect');
-                window.location = '/ready/';
-            })
+                loginUser()
+                    .then(result => {alert('reg-login'); window.location = '/ready/';})
+                    .catch(reason => console.log('onclick: ' + reason))
+                }
+            )
             .catch(reason => {
-                console.log('onclick - rejected on register: ' + reason);
-            });
+                console.log('onclick reg: ' + reason);
+            })
+
     });
 
-     whoAmI()
-        .then(result => {
-            alert('load -> reditect');
-            window.location = '/ready/';
-        })
-        .catch(reason => {
-            console.log('No local user: ' + reason);
-        })   
+    document.querySelector('.btn-login').addEventListener('click', () => {
+        loginUser()
+            .then(() => {
+                alert('login');
+                window.location = '/ready/';
+            })
+            .catch(reason => console.log('onclick log: ' + reason))
+    });
 });
 
 
