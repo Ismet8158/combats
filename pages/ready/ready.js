@@ -23,8 +23,8 @@ window.addEventListener('load', () => {
 })
 
 function goFight() {
+    //TODO: Сделать проверку на нужный возврат user здесь либо в common.js/getUser()
     var localUser = getUser();
-    console.log('ID: ' + localUser.token);
 
     return apiRequest('/fight', {
             method: 'POST',
@@ -45,15 +45,12 @@ function goFight() {
 }
 
 function waitForBattle() {
+    var buttonFight = document.querySelector('.btn-fight');
     var localUser = getUser();
-    console.log('ID: ' + localUser.token);
-
     var combatObj = getCombatObject();
     if (combatObj.combat.id && localUser.token) {
         var combatId = combatObj.combat.id;
         var userId = localUser.token;
-        console.log('COMBAT: ' + combatObj);
-        console.log('COMBAT_ID: ' + combatId);
         timeout();
         function timeout(){
             setTimeout(() => {
@@ -61,9 +58,12 @@ function waitForBattle() {
                     .then(responseText => {
                         parsedResponse = JSON.parse(responseText);
                         console.log(parsedResponse.combat.status);
+                        buttonFight.textContent = parsedResponse.combat.status;
                         if(parsedResponse.combat.status === 'progress')
                         {
                             console.log(parsedResponse.combat);
+                            buttonFight.innerHTML = "<a href='/fight'>next</a>"
+                            buttonFight.onclick = function(){console.log('re')};
                         }
                         else
                             timeout();
@@ -84,7 +84,6 @@ function waitForBattle() {
 function logOut()
 {
     localStorage.clear();
-    alert('logging out ...  ');
     window.location = '/login/';
 }
  
@@ -92,11 +91,15 @@ window.addEventListener('DOMContentLoaded', function() {
     whoAmI()
         .then(result => {
             console.log('logged in');
+            // Костыль
+            if(getCombatObject())
+                waitForBattle();
         })
         .catch(reason => {
             console.log('No local user: ' + reason);
             alert('back');
             window.location = "/login/";
         })
-       
+     
+        
 });
