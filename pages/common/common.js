@@ -64,6 +64,33 @@
         });
     }
 
+    
+function getUserInfo(event){
+    const user_id = event.target.dataset.user;
+    var localUser = getUser();
+    console.log("user_id: " + user_id);
+    return new Promise((resolve, reject) => {
+        apiRequest(`/info?token=${localUser.token}&user_id=${user_id}`)
+            .then(apiAnswer => {
+                parsedAnswer = JSON.parse(apiAnswer);
+                if (parsedAnswer.status === 'ok' && parsedAnswer.user) {
+                    console.log('remoteUserGot');
+                    resolve(showProfile(parsedAnswer.user));
+                } else {
+                    reject('getUserInfo.status != OK; ');
+                }
+            })  
+            .catch(reason => {
+                reject('/Info req error; ' + reason);
+            });
+    });
+}
+
+
+function showProfile(user){    
+
+}
+
     window.apiRequest = apiRequest;
     window.setUser = setUser;
     window.getUser = getUser;
@@ -71,36 +98,7 @@
     window.getCombatObject = getCombatObject;
     window.whoAmI = whoAmI;
     window.clearLocalStorage = clearLocalStorage;
+    window.showProfile = showProfile;
+    window.getUserInfo = getUserInfo;
 })();
 
-
-
-function showProfile(user){
-    var src = `
-    <div class="parange">
-    </div>
-    <div class="frame">
-        <div class="box">
-            <div class="main">         
-                <p>${user.username}</p>
-                <p>${user.id}</p>                
-                <div class="btn">
-                    <p>Follow</p>
-                </div>
-                <div class="btn">
-                    <p>Message</p>
-                </div>
-            </div>
-
-            <div class="posts">  <p class="small">Количество боев</p>
-            </div>
-
-            <div class="likes"> 1387 <p class="small">Количество побед</p>
-            </div>
-
-            <div class="followers"> 146<p class="small">Количество</p>
-            </div>
-
-        </div>
-    </div>`
-}
