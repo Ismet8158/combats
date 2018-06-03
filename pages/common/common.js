@@ -90,6 +90,8 @@ function showProfile(user, combats) {
     document.getElementsByClassName("user_name")[0].innerHTML = user.username;
     document.getElementsByClassName("user_id")[0].innerHTML = user.id;
     document.getElementsByClassName("parange")[0].style.display = 'block';
+    document.getElementsByClassName("battleCount")[0].innerHTML = combats.length;
+    document.getElementsByClassName("lastStatus")[0].innerHTML = combats[combats.length-1].status;
 }
 
 function hideUserProfile() {
