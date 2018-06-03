@@ -72,3 +72,35 @@
     window.whoAmI = whoAmI;
     window.clearLocalStorage = clearLocalStorage;
 })();
+
+
+
+function showProfile(user){
+    var src = `
+    <div class="parange">
+    </div>
+    <div class="frame">
+        <div class="box">
+            <div class="main">         
+                <p>${user.username}</p>
+                <p>${user.id}</p>                
+                <div class="btn">
+                    <p>Follow</p>
+                </div>
+                <div class="btn">
+                    <p>Message</p>
+                </div>
+            </div>
+
+            <div class="posts">  <p class="small">Количество боев</p>
+            </div>
+
+            <div class="likes"> 1387 <p class="small">Количество побед</p>
+            </div>
+
+            <div class="followers"> 146<p class="small">Количество</p>
+            </div>
+
+        </div>
+    </div>`
+}
