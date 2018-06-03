@@ -75,32 +75,12 @@
 
 
 
-function showProfile(user){
-    var src = `
-    <div class="parange">
-    </div>
-    <div class="frame">
-        <div class="box">
-            <div class="main">         
-                <p>${user.username}</p>
-                <p>${user.id}</p>                
-                <div class="btn">
-                    <p>Follow</p>
-                </div>
-                <div class="btn">
-                    <p>Message</p>
-                </div>
-            </div>
+function showProfile(user) {
+    document.getElementsByClassName("user_name")[0].innerHTML = user.username;
+    document.getElementsByClassName("user_id")[0].innerHTML = user.id;
+    document.getElementsByClassName("parange")[0].style.display = 'block';
+}
 
-            <div class="posts">  <p class="small">Количество боев</p>
-            </div>
-
-            <div class="likes"> 1387 <p class="small">Количество побед</p>
-            </div>
-
-            <div class="followers"> 146<p class="small">Количество</p>
-            </div>
-
-        </div>
-    </div>`
+function hideUserProfile() {
+    document.getElementsByClassName("parange")[0].style.display = 'none';
 }
