@@ -3,7 +3,8 @@ function getOnline() {
         .then(responseText => {
             const response = JSON.parse(responseText);
             return response.users.map(item => {
-                return `<li>${item.username}</li>`;
+                console.log(item);
+                return `<li data-user='${item.id}'>${item.username}</li>`;
             });
         })
         .catch(reason => {

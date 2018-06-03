@@ -75,7 +75,7 @@ function getUserInfo(event){
                 parsedAnswer = JSON.parse(apiAnswer);
                 if (parsedAnswer.status === 'ok' && parsedAnswer.user) {
                     console.log('remoteUserGot');
-                    resolve(showProfile(parsedAnswer.user));
+                    resolve(showProfile(parsedAnswer.user, parsedAnswer.combats));
                 } else {
                     reject('getUserInfo.status != OK; ');
                 }
@@ -86,7 +86,7 @@ function getUserInfo(event){
     });
 }
 
-function showProfile(user) {
+function showProfile(user, combats) {
     document.getElementsByClassName("user_name")[0].innerHTML = user.username;
     document.getElementsByClassName("user_id")[0].innerHTML = user.id;
     document.getElementsByClassName("parange")[0].style.display = 'block';

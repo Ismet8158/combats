@@ -6,11 +6,12 @@
     <title>Combats</title>
     <!--<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css1">-->
     <link rel="stylesheet" href="ready.css">
+    <link rel="stylesheet" href="../common/common.css">
 </head>
 
 <body>
     <div class="w3-sidebar w3-bar-block w3-light-grey" style="width:300px">
-        <ul class="w3-ul">
+        <ul class="w3-ul" onclick="getUserInfo(event)">
             <li><h2>Online</h2></li>
         </ul>
     </div>
@@ -25,5 +26,36 @@
     </div>
     <script src="../common/common.js"></script>
     <script src="ready.js"></script>
+
+    <div class="parange" onclick="hideUserProfile()">
+
+        <div class="frame">
+            <div class="box">
+                <div class="main">
+                    <p class="user_name"> </p>
+                    <p class="user_id"> </p>
+                    <div class="btn">
+                        <p>Follow</p>
+                    </div>
+                    <div class="btn">
+                        <p>Message</p>
+                    </div>
+                </div>
+
+                <div class="posts">
+                    <p class="small">Количество боев</p>
+                </div>
+
+                <div class="likes">
+                    1387 <p class="small">Количество побед</p>
+                </div>
+
+                <div class="followers">
+                    146<p class="small">Количество</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>
