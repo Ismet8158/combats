@@ -37,6 +37,7 @@ function goFight() {
                     return;
             })
             .catch(reason => {
+                showMessage(reason);
                 console.error('FightAPI req error: ' + reason);
             });
     }
@@ -70,7 +71,8 @@ function waitForBattle() {
                             timeout();
                     })
                     .catch(reason => {
-                        console.error('WaitForBattle.timeout.ApiRequest() error:: ' + reason);
+                        showMessage(reason);
+                        console.error(reason);
                         //TODO: Добавить логику на сломанный apiRequest();
                     })
             }, 1000);  
@@ -98,6 +100,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 waitForBattle();
         })
         .catch(reason => {
+            showMessage(reason);
             console.log('No local user: ' + reason);
             alert('back');
             window.location = "/login/";

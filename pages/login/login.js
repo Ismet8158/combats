@@ -23,7 +23,7 @@ function registerUser() {
                 }
             })
             .catch(reason => {
-                reject('RegisterAPI request error: ' + reason);
+                reject(reason);
             });
     });
 }
@@ -52,7 +52,7 @@ function loginUser() {
                     reject('LoginAnswer.status != ok; ');
                 }       
             })
-            .catch(reason => reject('LoginAPI request error; ' + reason));
+            .catch(reason => reject(reason));
     });
 }
 
@@ -66,6 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             )
             .catch(reason => {
+                showMessage(reason);
                 console.log('onclick reg: ' + reason);
             })
 
@@ -77,7 +78,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 alert('login');
                 window.location = '/ready/';
             })
-            .catch(reason => console.log('onclick log: ' + reason))
+            .catch(reason => {
+                showMessage(reason);
+                console.log('onclick log: ' + reason);
+            })
     });
 });
 

@@ -73,6 +73,17 @@
             }
         });
     }
+    
+    function showMessage(message) {
+
+        var newDiv = document.createElement("P");
+        var newContent;
+        if (message.status && message.statusText) newContent = document.createTextNode("status: " + message.status + message.statusText);
+        else newContent = document.createTextNode(message);
+        newDiv.setAttribute("class", "messageDialog showMessage");
+        newDiv.appendChild(newContent);
+        document.body.appendChild(newDiv);
+    }
 
     window.apiRequest = apiRequest;
     window.setUser = setUser;
@@ -81,4 +92,5 @@
     window.getCombatObject = getCombatObject;
     window.whoAmI = whoAmI;
     window.clearLocalStorage = clearLocalStorage;
+    window.showMessage = showMessage;
 })();

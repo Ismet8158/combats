@@ -1,0 +1,24 @@
+/*message dialog*/
+
+.messageDialog {
+    opacity: 0;
+}
+
+.showMessage {
+    background: rgba(174, 30, 31, 0.9);
+    color: whitesmoke;
+    text-align: center;
+    padding: 10px 20px;
+    width: 250px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 0;
+    right: 20px;
+    animation: 5s messageDialogAnim linear;
+    opacity: 0;
+}
+
+@keyframes messageDialogAnim {
+    0%,100% { opacity: 0; bottom: 0; }
+    20%,70% { opacity: 1; bottom: 50px; }
+}
