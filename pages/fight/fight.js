@@ -1,5 +1,5 @@
 function sendMoveRequest(val) {
-    apiRequest('turn', {method: 'post', body: val})
+    apiRequest('/turn', {method: 'post', body: val})
         .then(text => {
             res = JSON.parse(text);
             if (res.status === 'ok') {
@@ -27,10 +27,10 @@ function makeMove() {
     var turn = JSON.stringify({"hit": hit, "blocks": block});
     console.log(turn);
 
-    apiRequest('login', {method: 'post', body: 'user_id=KUpXGc'}).then(text=>console.log(text));
+    //apiRequest('/login', {method: 'post', body: 'user_id=KUpXGc'}).then(text=>console.log(text));
 
-    combatid = getCombatObject().combat_id;
-    sendMoveRequest(`user_id=${getUser().token}&combat_id=${combatid}&turn=${turn}`);
+    combatid = getCombatObject().combat.id;
+    sendMoveRequest(`token=${getUser().token}&combat_id=${combatid}&turn=${turn}`);
 }
 
 
@@ -38,7 +38,7 @@ window.onload = function () {
 }
 
 function health_change(player, newValue) {
-    var health = document.getElementsByClassName("progress_player" + player)[0];
+    var health = document.getElementById("health" + player);
     return health.value = newValue;
 }
 
