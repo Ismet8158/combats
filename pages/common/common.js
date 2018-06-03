@@ -86,11 +86,17 @@ function getUserInfo(event){
     });
 }
 
-
-function showProfile(user){    
-
+function showProfile(user) {
+    document.getElementsByClassName("user_name")[0].innerHTML = user.username;
+    document.getElementsByClassName("user_id")[0].innerHTML = user.id;
+    document.getElementsByClassName("parange")[0].style.display = 'block';
 }
 
+function hideUserProfile() {
+    document.getElementsByClassName("parange")[0].style.display = 'none';
+}
+
+    window.hideUserProfile = hideUserProfile;
     window.apiRequest = apiRequest;
     window.setUser = setUser;
     window.getUser = getUser;
@@ -101,4 +107,3 @@ function showProfile(user){
     window.showProfile = showProfile;
     window.getUserInfo = getUserInfo;
 })();
-
